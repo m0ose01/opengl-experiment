@@ -127,6 +127,7 @@ int main(void)
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader1);
+	glDeleteShader(fragmentShader2);
 
 	float vertices1[] = {
 		-0.1f, 0.5f, 0.0f,
