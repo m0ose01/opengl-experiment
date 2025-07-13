@@ -93,15 +93,17 @@ int main(void)
 	glDeleteShader(fragmentShader);
 
 	float vertices[] = {
-		0.5f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f,  -0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f,
+		-0.1f, 0.5f, 0.0f,
+		-0.1f,  -0.5f, 0.0f,
+		-0.6f, -0.5f, 0.0f,
+		0.1f, 0.5f, 0.0f,
+		0.1f,  -0.5f, 0.0f,
+		0.6f,  -0.5f, 0.0f,
 	};
 
 	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3,
+		0, 1, 2,
+		3, 4, 5,
 	};
 
 	unsigned int VBO, VAO, EBO;
@@ -121,7 +123,7 @@ int main(void)
 
 	glBindVertexArray(0);
 
-	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	while(!glfwWindowShouldClose(window))
 	{
