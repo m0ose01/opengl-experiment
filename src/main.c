@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #include <hello.h>
 #include <shader.h>
@@ -61,6 +62,8 @@ int main(void)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	int offsetXLocation = glGetUniformLocation(shaderProgram, "offsetX");
+
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 
 	while(!glfwWindowShouldClose(window))
@@ -71,6 +74,8 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
+		double time = glfwGetTime();
+		glUniform1f(offsetXLocation, sin(time) / 2.0);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glfwSwapBuffers(window);
