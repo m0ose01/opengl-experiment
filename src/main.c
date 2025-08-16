@@ -1,8 +1,10 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
 
 #include <hello.h>
 #include <shader.h>
+#include <texture.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -43,25 +45,10 @@ int main(void)
 		return 1;
 	}
 
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nrChannels;
-	char *texturePath = "textures/container.jpg";
-	unsigned char *data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
-	if (data == NULL)
-	{
-		fprintf(stderr, "Error loading image. %s\n", texturePath);
-		return 1;
-	}
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	char *texture1Path = "textures/container.jpg";
+	char *texture2Path = "textures/awesomeface.png";
+	GLuint texture1 = loadTexture(texture1Path);
+	GLuint texture2 = loadTexture(texture2Path);
 
 	float vertices[] = {
 		// positions          // colors           // texture coords
@@ -98,7 +85,6 @@ int main(void)
 	int offsetXLocation = glGetUniformLocation(shaderProgram, "offsetX");
 
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
-
 	while(!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -107,10 +93,16 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
+		glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+		glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+
 		double time = glfwGetTime();
 		glUniform1f(offsetXLocation, sin(time) / 2.0);
 		glBindVertexArray(VAO);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
