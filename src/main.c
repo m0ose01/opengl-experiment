@@ -83,6 +83,9 @@ int main(void)
 	glEnableVertexAttribArray(2);
 
 	int offsetXLocation = glGetUniformLocation(shaderProgram, "offsetX");
+	int mixLevelLocation = glGetUniformLocation(shaderProgram, "mixLevel");
+	float mixLevel = 1.0;
+	const float mixLevelChangeSpeed = 0.005;
 
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 	while(!glfwWindowShouldClose(window))
@@ -98,6 +101,18 @@ int main(void)
 
 		double time = glfwGetTime();
 		glUniform1f(offsetXLocation, sin(time) / 2.0);
+
+		// TODO: Figure out how to do this in a cleaner/more scaleable way
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			mixLevel += mixLevelChangeSpeed;
+		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			mixLevel -= mixLevelChangeSpeed;
+		}
+
+		glUniform1f(mixLevelLocation, mixLevel);
 		glBindVertexArray(VAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
