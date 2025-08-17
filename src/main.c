@@ -47,15 +47,15 @@ int main(void)
 
 	char *texture1Path = "textures/container.jpg";
 	char *texture2Path = "textures/awesomeface.png";
-	GLuint texture1 = loadTexture(texture1Path, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	GLuint texture1 = loadTexture(texture1Path, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
 	GLuint texture2 = loadTexture(texture2Path, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
 
 	float vertices[] = {
 		// positions          // colors           // texture coords
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,   // top right
-		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f,   // bottom right
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
 		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f    // top left 
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
 	};
 
 	unsigned int elements[] = {
