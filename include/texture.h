@@ -4,6 +4,6 @@
 #include <glad/glad.h>
 #include <stdbool.h>
 
-GLuint loadTexture(char *texturePath);
+GLuint loadTexture(char *texturePath, int wrapS, int wrapT);
 
 #endif
