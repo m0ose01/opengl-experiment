@@ -107,8 +107,8 @@ int main(void)
 		mat4 trans = GLM_MAT4_IDENTITY_INIT;
 		vec3 axis = {0.0f, 0.0f, 1.0f};
 		vec3 translation = {0.5, -0.5f, 0.0f};
-		glm_translate(trans, translation);
 		glm_rotate(trans, (float)time, axis);
+		glm_translate(trans, translation);
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans);
 
 		glUniform1f(offsetXLocation, sin(time) / 2.0);
