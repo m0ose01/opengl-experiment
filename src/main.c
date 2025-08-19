@@ -104,13 +104,6 @@ int main(void)
 
 		double time = glfwGetTime();
 
-		mat4 trans = GLM_MAT4_IDENTITY_INIT;
-		vec3 axis = {0.0f, 0.0f, 1.0f};
-		vec3 translation = {0.5, -0.5f, 0.0f};
-		glm_translate(trans, translation);
-		glm_rotate(trans, (float)time, axis);
-		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans);
-
 		glUniform1f(offsetXLocation, sin(time) / 2.0);
 
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
@@ -129,6 +122,20 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
+
+		mat4 trans = GLM_MAT4_IDENTITY_INIT;
+		vec3 axis = {0.0f, 0.0f, 1.0f};
+		vec3 translation = {0.5f, -0.5f, 0.0f};
+		glm_translate(trans, translation);
+		glm_rotate(trans, (float)time, axis);
+		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		mat4 trans2 = GLM_MAT4_IDENTITY_INIT;
+		vec3 translation2 = {-0.5f, 0.5f, 0.0f};
+		glm_translate(trans2, translation2);
+		glm_rotate(trans2, (float)time, axis);
+		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
