@@ -116,13 +116,15 @@ int main(void)
 	float mixLevel = 0.5;
 	const float mixLevelChangeSpeed = 0.005;
 
+	glEnable(GL_DEPTH_TEST);
+
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 	while(!glfwWindowShouldClose(window))
 	{
 		processInput(window);
 
 		glClearColor(0.2, 0.2, 0.2, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
 		glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
@@ -148,10 +150,10 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
-		vec3 axis = {1.0f, 0.0f, 0.0f};
+		vec3 axis = {0.5f, 1.0f, 0.0f};
 		vec3 translation = {0.0f, 0.0f, 0.0f};
 		glm_translate(model, translation);
-		glm_rotate(model, glm_rad(-55.0f), axis);
+		glm_rotate(model, (float)time * glm_rad(-50.0f), axis);
 
 		mat4 view = GLM_MAT4_IDENTITY_INIT;
 		vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
