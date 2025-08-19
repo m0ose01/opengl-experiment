@@ -127,8 +127,8 @@ int main(void)
 	int modelLocation = glGetUniformLocation(shaderProgram, "model");
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
-	float mixLevel = 0.5;
-	const float mixLevelChangeSpeed = 0.005;
+	vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
+	const float translationSpeed = 0.05;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -147,16 +147,31 @@ int main(void)
 		double time = glfwGetTime();
 
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			viewTranslation[0] += translationSpeed;
+		}
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			viewTranslation[0] -= translationSpeed;
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		{
+			viewTranslation[1] -= translationSpeed;
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			viewTranslation[1] += translationSpeed;
+		}
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			mixLevel += mixLevelChangeSpeed;
+			viewTranslation[2] += translationSpeed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			mixLevel -= mixLevelChangeSpeed;
+			viewTranslation[2] -= translationSpeed;
 		}
 
-		glUniform1f(mixLevelLocation, mixLevel);
 		glBindVertexArray(VAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
@@ -164,7 +179,6 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		mat4 view = GLM_MAT4_IDENTITY_INIT;
-		vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
 		glm_translate(view, viewTranslation);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
