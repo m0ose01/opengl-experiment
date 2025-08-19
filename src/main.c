@@ -96,6 +96,20 @@ int main(void)
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
+	vec3 cubePositions[] = {
+		{ 0.0f,  0.0f,  0.0f},
+		{ 2.0f,  5.0f, -15.0f},
+		{-1.5f, -2.2f, -2.5f},
+		{-3.8f, -2.0f, -12.3f},
+		{ 2.4f, -0.4f, -3.5f},
+		{-1.7f,  3.0f, -7.5f},
+		{ 1.3f, -2.0f, -2.5f},
+		{ 1.5f,  2.0f, -2.5f},
+		{ 1.5f,  0.2f, -1.5f},
+		{-1.3f,  1.0f, -1.5f},
+	};
+
+
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -149,12 +163,6 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		mat4 model = GLM_MAT4_IDENTITY_INIT;
-		vec3 axis = {0.5f, 1.0f, 0.0f};
-		vec3 translation = {0.0f, 0.0f, 0.0f};
-		glm_translate(model, translation);
-		glm_rotate(model, (float)time * glm_rad(-50.0f), axis);
-
 		mat4 view = GLM_MAT4_IDENTITY_INIT;
 		vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
 		glm_translate(view, viewTranslation);
@@ -162,11 +170,18 @@ int main(void)
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
 		glm_perspective(glm_rad(45.0f), 800.0f / 600.0f, 0.1f, 100.0f, projection);
 
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
+		for (int currentCube = 0; currentCube < 10; currentCube++)
+		{
+			mat4 model = GLM_MAT4_IDENTITY_INIT;
+			vec3 modelRotationAxis = {0.5f, 1.0f, 0.0f};
+			glm_translate(model, cubePositions[currentCube]);
+			glm_rotate(model, glm_rad(20.0f * currentCube), modelRotationAxis);
 
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
+			glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
+			glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
