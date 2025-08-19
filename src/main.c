@@ -6,6 +6,8 @@
 #include <shader.h>
 #include <texture.h>
 
+#include <cglm/cglm.h>
+#include <cglm/affine.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -84,8 +86,14 @@ int main(void)
 
 	int offsetXLocation = glGetUniformLocation(shaderProgram, "offsetX");
 	int mixLevelLocation = glGetUniformLocation(shaderProgram, "mixLevel");
+	int transformLocation = glGetUniformLocation(shaderProgram, "transform");
 	float mixLevel = 1.0;
 	const float mixLevelChangeSpeed = 0.005;
+
+	mat4 trans = GLM_MAT4_IDENTITY_INIT;
+	vec3 axis = {0.0f, 0.0f, 1.0f};
+	glm_scale_uni(trans, 0.5);
+	glm_rotate(trans, glm_rad(90.0f), axis);
 
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
 	while(!glfwWindowShouldClose(window))
@@ -98,6 +106,7 @@ int main(void)
 		glUseProgram(shaderProgram);
 		glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
 		glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans);
 
 		double time = glfwGetTime();
 		glUniform1f(offsetXLocation, sin(time) / 2.0);

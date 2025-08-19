@@ -4,6 +4,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(glfw)
 add_subdirectory(glad)
+add_subdirectory(cglm)
 
 add_executable(hello src/main.c)
 
@@ -17,5 +18,6 @@ target_include_directories(shader PRIVATE include)
 target_include_directories(texture PRIVATE include)
 
 target_link_libraries(hello glfw glad stb_image texture shader)
+target_link_libraries(hello cglm)
 target_link_libraries(shader glad stb_image)
 target_link_libraries(texture glad stb_image)
