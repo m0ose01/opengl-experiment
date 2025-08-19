@@ -168,7 +168,9 @@ int main(void)
 		glm_translate(view, viewTranslation);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
-		glm_perspective(glm_rad(45.0f), 800.0f / 600.0f, 0.1f, 100.0f, projection);
+		float fov = glm_rad(45.0f);
+		float aspectRatio = 800.0f / 600.0f;
+		glm_perspective(fov, aspectRatio, 0.1f, 100.0f, projection);
 
 		for (int currentCube = 0; currentCube < 10; currentCube++)
 		{
