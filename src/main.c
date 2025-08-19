@@ -134,7 +134,7 @@ int main(void)
 		mat4 trans2 = GLM_MAT4_IDENTITY_INIT;
 		vec3 translation2 = {-0.5f, 0.5f, 0.0f};
 		glm_translate(trans2, translation2);
-		glm_rotate(trans2, (float)time, axis);
+		glm_scale_uni(trans2, (float)sin(time));
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans2);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
