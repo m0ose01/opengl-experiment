@@ -191,7 +191,13 @@ int main(void)
 			mat4 model = GLM_MAT4_IDENTITY_INIT;
 			vec3 modelRotationAxis = {0.5f, 1.0f, 0.0f};
 			glm_translate(model, cubePositions[currentCube]);
-			glm_rotate(model, glm_rad(20.0f * currentCube), modelRotationAxis);
+			float rotationSpeed = 50.0f;
+			float rotationOffset = 20.0f;
+			float angle = glm_rad(
+				(currentCube % 3 == 0) * time * rotationSpeed
+				+ rotationOffset * currentCube
+			);
+			glm_rotate(model, angle, modelRotationAxis);
 
 			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 			glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
