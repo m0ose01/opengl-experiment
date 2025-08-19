@@ -84,7 +84,6 @@ int main(void)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	int offsetXLocation = glGetUniformLocation(shaderProgram, "offsetX");
 	int mixLevelLocation = glGetUniformLocation(shaderProgram, "mixLevel");
 	int transformLocation = glGetUniformLocation(shaderProgram, "transform");
 	float mixLevel = 0.5;
@@ -103,8 +102,6 @@ int main(void)
 		glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
 		double time = glfwGetTime();
-
-		glUniform1f(offsetXLocation, sin(time) / 2.0);
 
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
