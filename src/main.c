@@ -85,7 +85,9 @@ int main(void)
 	glEnableVertexAttribArray(2);
 
 	int mixLevelLocation = glGetUniformLocation(shaderProgram, "mixLevel");
-	int transformLocation = glGetUniformLocation(shaderProgram, "transform");
+	int modelLocation = glGetUniformLocation(shaderProgram, "model");
+	int viewLocation = glGetUniformLocation(shaderProgram, "view");
+	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 	float mixLevel = 0.5;
 	const float mixLevelChangeSpeed = 0.005;
 
@@ -120,20 +122,25 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		mat4 trans = GLM_MAT4_IDENTITY_INIT;
-		vec3 axis = {0.0f, 0.0f, 1.0f};
-		vec3 translation = {0.5f, -0.5f, 0.0f};
-		glm_translate(trans, translation);
-		glm_rotate(trans, (float)time, axis);
-		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans);
+		mat4 model = GLM_MAT4_IDENTITY_INIT;
+		vec3 axis = {1.0f, 0.0f, 0.0f};
+		vec3 translation = {0.0f, 0.0f, 0.0f};
+		glm_translate(model, translation);
+		glm_rotate(model, glm_rad(-55.0f), axis);
+
+		mat4 view = GLM_MAT4_IDENTITY_INIT;
+		vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
+		glm_translate(view, viewTranslation);
+
+		mat4 projection = GLM_MAT4_IDENTITY_INIT;
+		glm_perspective(glm_rad(45.0f), 800.0f / 600.0f, 0.1f, 100.0f, projection);
+
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
+		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
+		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		mat4 trans2 = GLM_MAT4_IDENTITY_INIT;
-		vec3 translation2 = {-0.5f, 0.5f, 0.0f};
-		glm_translate(trans2, translation2);
-		glm_scale_uni(trans2, (float)sin(time));
-		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, (float *)trans2);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
