@@ -123,7 +123,6 @@ int main(void)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-	int mixLevelLocation = glGetUniformLocation(shaderProgram, "mixLevel");
 	int modelLocation = glGetUniformLocation(shaderProgram, "model");
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
