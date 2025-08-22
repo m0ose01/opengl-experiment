@@ -127,8 +127,20 @@ int main(void)
 	int modelLocation = glGetUniformLocation(shaderProgram, "model");
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
+
+	vec3 cameraPosition = {0.0f, 0.0f, 3.0f};
+	vec3 cameraFront = {0.0f, 0.0f, -1.0f};
+	vec3 cameraTarget;
+	glm_vec3_add(cameraPosition, cameraFront, cameraTarget);
+
+	vec3 worldUp = {0.0f, 1.0f, 0.0f};
+
+	mat4 view;
+	glm_lookat(cameraPosition, cameraTarget, worldUp, view);
+
 	vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
 	const float translationSpeed = 0.05;
+	const float radius = 10.0f;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -178,8 +190,9 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		mat4 view = GLM_MAT4_IDENTITY_INIT;
-		glm_translate(view, viewTranslation);
+		cameraPosition[0] = sin(time) * radius;
+		cameraPosition[2] = cos(time) * radius;
+		glm_lookat(cameraPosition, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
 		float fov = glm_rad(45.0f);
