@@ -1,3 +1,4 @@
+#include "cglm/vec3.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
@@ -157,30 +158,41 @@ int main(void)
 
 		double time = glfwGetTime();
 
+		vec3 cameraForward = {0, 0, 0};
+		glm_vec3_scale(cameraFront, translationSpeed, cameraForward);
+
+		vec3 cameraUp = {0, 0, 0};
+		glm_vec3_scale(worldUp, translationSpeed, cameraUp);
+
+		vec3 cameraRight = {0, 0, 0};
+		glm_vec3_cross(cameraForward, worldUp, cameraRight);
+		glm_vec3_normalize(cameraRight);
+		glm_vec3_scale(cameraRight, translationSpeed, cameraRight);
+
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			viewTranslation[0] += translationSpeed;
+			glm_vec3_sub(cameraPosition, cameraRight, cameraPosition);
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			viewTranslation[0] -= translationSpeed;
+			glm_vec3_add(cameraPosition, cameraRight, cameraPosition);
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
 		{
-			viewTranslation[1] -= translationSpeed;
+			glm_vec3_add(cameraPosition, cameraUp, cameraPosition);
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			viewTranslation[1] += translationSpeed;
+			glm_vec3_sub(cameraPosition, cameraUp, cameraPosition);
 		}
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			viewTranslation[2] += translationSpeed;
+			glm_vec3_add(cameraPosition, cameraForward, cameraPosition);
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			viewTranslation[2] -= translationSpeed;
+			glm_vec3_sub(cameraPosition, cameraForward, cameraPosition);
 		}
 
 		glBindVertexArray(VAO);
@@ -189,8 +201,7 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		cameraPosition[0] = sin(time) * radius;
-		cameraPosition[2] = cos(time) * radius;
+		glm_vec3_add(cameraPosition, cameraFront, cameraTarget);
 		glm_lookat(cameraPosition, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
