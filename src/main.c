@@ -139,14 +139,20 @@ int main(void)
 	glm_lookat(cameraPosition, cameraTarget, worldUp, view);
 
 	vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
-	const float translationSpeed = 0.05;
+	const float translationSpeed = 10.0f;
 	const float radius = 10.0f;
 
 	glEnable(GL_DEPTH_TEST);
 
 	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
+
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 	while(!glfwWindowShouldClose(window))
 	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 		processInput(window);
 
 		glClearColor(0.2, 0.2, 0.2, 1.0);
@@ -159,15 +165,15 @@ int main(void)
 		double time = glfwGetTime();
 
 		vec3 cameraForward = {0, 0, 0};
-		glm_vec3_scale(cameraFront, translationSpeed, cameraForward);
+		glm_vec3_scale(cameraFront, translationSpeed * deltaTime, cameraForward);
 
 		vec3 cameraUp = {0, 0, 0};
-		glm_vec3_scale(worldUp, translationSpeed, cameraUp);
+		glm_vec3_scale(worldUp, translationSpeed * deltaTime, cameraUp);
 
 		vec3 cameraRight = {0, 0, 0};
 		glm_vec3_cross(cameraForward, worldUp, cameraRight);
 		glm_vec3_normalize(cameraRight);
-		glm_vec3_scale(cameraRight, translationSpeed, cameraRight);
+		glm_vec3_scale(cameraRight, translationSpeed * deltaTime, cameraRight);
 
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
