@@ -129,7 +129,13 @@ int main(void)
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
 	vec3 cameraPosition = {0.0f, 0.0f, 3.0f};
-	vec3 cameraFront = {0.0f, 0.0f, -1.0f};
+	float cameraPitch_deg = 0.0f;
+	float cameraYaw_deg = -90.0f;
+	vec3 cameraFront = {
+		cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraYaw_deg)),
+		sin(glm_rad(cameraPitch_deg)),
+		sin(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg)),
+	};
 	vec3 cameraTarget;
 	glm_vec3_add(cameraPosition, cameraFront, cameraTarget);
 
