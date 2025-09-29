@@ -15,6 +15,7 @@
 
 float lastX = 400, lastY = 300;
 float cameraPitch_deg = 0.0f, cameraYaw_deg = -90.0f;
+float fov = 45.0f;
 bool firstMouse = true;
 
 int main(void)
@@ -48,6 +49,7 @@ int main(void)
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	GLuint shaderProgram = loadShader("./shaders/vertex.glsl", "./shaders/fragment.glsl");
 	if (shaderProgram == 0)
@@ -227,9 +229,8 @@ int main(void)
 		glm_lookat(cameraPosition, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
-		float fov = glm_rad(45.0f);
 		float aspectRatio = 800.0f / 600.0f;
-		glm_perspective(fov, aspectRatio, 0.1f, 100.0f, projection);
+		glm_perspective(glm_rad(fov), aspectRatio, 0.1f, 100.0f, projection);
 
 		for (int currentCube = 0; currentCube < 10; currentCube++)
 		{
@@ -299,5 +300,18 @@ void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 	if (cameraPitch_deg < -89.0f)
 	{
 		cameraPitch_deg = -89.0f;
+	}
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    fov -= (float)yoffset;
+    if (fov < 1.0f)
+	{
+		fov = 1.0f;
+	}
+    if (fov > 45.0f)
+	{
+		fov = 45.0f;
 	}
 }
