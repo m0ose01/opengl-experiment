@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <hello.h>
+#include <game.h>
 #include <shader.h>
 #include <texture.h>
 #include <camera.h>

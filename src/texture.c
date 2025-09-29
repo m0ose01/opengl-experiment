@@ -1,3 +1,6 @@
+#ifndef SHADER_H
+#define SHADER_H
+
 #include <texture.h>
 
 #include <glad/glad.h>
@@ -32,3 +35,4 @@ GLuint loadTexture(char *texturePath, int wrapS, int wrapT)
 	return texture;
 }
 
+#endif

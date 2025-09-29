@@ -1,3 +1,6 @@
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include <cglm/cglm.h>
 #include <GLFW/glfw3.h>
 
@@ -28,3 +31,5 @@ typedef struct Mouse {
 void initialise_camera(Camera *camera);
 void rotate_camera(Camera *camera);
 void move_camera(Camera *camera, DirectionFlags direction_flags, float delta_time);
+
+#endif
