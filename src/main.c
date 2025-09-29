@@ -13,6 +13,10 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
+float lastX = 400, lastY = 300;
+float cameraPitch_deg = 0.0f, cameraYaw_deg = -90.0f;
+bool firstMouse = true;
+
 int main(void)
 {
 
@@ -41,6 +45,9 @@ int main(void)
 
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	GLuint shaderProgram = loadShader("./shaders/vertex.glsl", "./shaders/fragment.glsl");
 	if (shaderProgram == 0)
@@ -129,10 +136,8 @@ int main(void)
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
 	vec3 cameraPosition = {0.0f, 0.0f, 3.0f};
-	float cameraPitch_deg = 0.0f;
-	float cameraYaw_deg = -90.0f;
 	vec3 cameraFront = {
-		cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraYaw_deg)),
+		cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg)),
 		sin(glm_rad(cameraPitch_deg)),
 		sin(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg)),
 	};
@@ -169,6 +174,11 @@ int main(void)
 		glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
 		double time = glfwGetTime();
+
+		cameraFront[0] = cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg));
+		cameraFront[1] = sin(glm_rad(cameraPitch_deg));
+		cameraFront[2] = sin(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg));
+		glm_normalize(cameraFront);
 
 		vec3 cameraForward = {0, 0, 0};
 		glm_vec3_scale(cameraFront, translationSpeed * deltaTime, cameraForward);
@@ -259,5 +269,35 @@ void processInput(GLFWwindow *window)
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
+void mouse_callback(GLFWwindow * window, double xpos, double ypos)
+{
+
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = (ypos - lastY) * -1;
+	lastX = xpos;
+	lastY = ypos;
+
+	const float sensitivity = 0.1f;
+
+	cameraYaw_deg += xoffset * sensitivity;
+	cameraPitch_deg += yoffset * sensitivity;
+
+	if (cameraPitch_deg > 89.0f)
+	{
+		cameraPitch_deg = 89.0f;
+	}
+	if (cameraPitch_deg < -89.0f)
+	{
+		cameraPitch_deg = -89.0f;
 	}
 }
