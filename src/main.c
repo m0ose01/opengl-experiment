@@ -20,7 +20,6 @@ bool firstMouse = true;
 
 int main(void)
 {
-
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
