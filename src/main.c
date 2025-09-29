@@ -1,11 +1,11 @@
 #include "cglm/vec3.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <math.h>
 
 #include <hello.h>
 #include <shader.h>
 #include <texture.h>
+#include <camera.h>
 
 #include <cglm/cglm.h>
 #include <cglm/affine.h>
@@ -14,8 +14,7 @@
 #include <stb_image.h>
 
 float lastX = 400, lastY = 300;
-float cameraPitch_deg = 0.0f, cameraYaw_deg = -90.0f;
-float fov = 45.0f;
+Camera camera;
 bool firstMouse = true;
 
 int main(void)
@@ -118,7 +117,6 @@ int main(void)
 		{-1.3f,  1.0f, -1.5f},
 	};
 
-
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -136,23 +134,17 @@ int main(void)
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
-	vec3 cameraPosition = {0.0f, 0.0f, 3.0f};
-	vec3 cameraFront = {
-		cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg)),
-		sin(glm_rad(cameraPitch_deg)),
-		sin(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg)),
-	};
+	initialise_camera(&camera);
+
 	vec3 cameraTarget;
-	glm_vec3_add(cameraPosition, cameraFront, cameraTarget);
+	glm_vec3_add(camera.position, camera.front, cameraTarget);
 
 	vec3 worldUp = {0.0f, 1.0f, 0.0f};
 
 	mat4 view;
-	glm_lookat(cameraPosition, cameraTarget, worldUp, view);
+	glm_lookat(camera.position, cameraTarget, worldUp, view);
 
-	vec3 viewTranslation = {0.0f, 0.0f, -3.0f};
 	const float translationSpeed = 10.0f;
-	const float radius = 10.0f;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -176,47 +168,35 @@ int main(void)
 
 		double time = glfwGetTime();
 
-		cameraFront[0] = cos(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg));
-		cameraFront[1] = sin(glm_rad(cameraPitch_deg));
-		cameraFront[2] = sin(glm_rad(cameraYaw_deg)) * cos(glm_rad(cameraPitch_deg));
-		glm_normalize(cameraFront);
-
-		vec3 cameraForward = {0, 0, 0};
-		glm_vec3_scale(cameraFront, translationSpeed * deltaTime, cameraForward);
-
-		vec3 cameraUp = {0, 0, 0};
-		glm_vec3_scale(worldUp, translationSpeed * deltaTime, cameraUp);
-
-		vec3 cameraRight = {0, 0, 0};
-		glm_vec3_cross(cameraForward, worldUp, cameraRight);
-		glm_vec3_normalize(cameraRight);
-		glm_vec3_scale(cameraRight, translationSpeed * deltaTime, cameraRight);
-
+		DirectionFlags direction_flags = 0;
 		// TODO: Figure out how to do this in a cleaner/more scaleable way
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			glm_vec3_sub(cameraPosition, cameraRight, cameraPosition);
+			direction_flags = direction_flags | LEFT;
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			glm_vec3_add(cameraPosition, cameraRight, cameraPosition);
+			direction_flags = direction_flags | RIGHT;
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
 		{
-			glm_vec3_add(cameraPosition, cameraUp, cameraPosition);
+			direction_flags = direction_flags | UP;
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			glm_vec3_sub(cameraPosition, cameraUp, cameraPosition);
+			direction_flags = direction_flags | DOWN;
 		}
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			glm_vec3_add(cameraPosition, cameraForward, cameraPosition);
+			direction_flags = direction_flags | FORWARDS;
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			glm_vec3_sub(cameraPosition, cameraForward, cameraPosition);
+			direction_flags = direction_flags | BACKWARDS;
 		}
+
+		rotate_camera(&camera);
+		move_camera(&camera, direction_flags, deltaTime);
 
 		glBindVertexArray(VAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -224,12 +204,12 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		glm_vec3_add(cameraPosition, cameraFront, cameraTarget);
-		glm_lookat(cameraPosition, cameraTarget, worldUp, view);
+		glm_vec3_add(camera.position, camera.front, cameraTarget);
+		glm_lookat(camera.position, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
 		float aspectRatio = 800.0f / 600.0f;
-		glm_perspective(glm_rad(fov), aspectRatio, 0.1f, 100.0f, projection);
+		glm_perspective(glm_rad(camera.fov), aspectRatio, 0.1f, 100.0f, projection);
 
 		for (int currentCube = 0; currentCube < 10; currentCube++)
 		{
@@ -289,28 +269,28 @@ void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 
 	const float sensitivity = 0.1f;
 
-	cameraYaw_deg += xoffset * sensitivity;
-	cameraPitch_deg += yoffset * sensitivity;
+	camera.yaw += xoffset * sensitivity;
+	camera.pitch += yoffset * sensitivity;
 
-	if (cameraPitch_deg > 89.0f)
+	if (camera.pitch > 89.0f)
 	{
-		cameraPitch_deg = 89.0f;
+		camera.pitch = 89.0f;
 	}
-	if (cameraPitch_deg < -89.0f)
+	if (camera.pitch < -89.0f)
 	{
-		cameraPitch_deg = -89.0f;
+		camera.pitch = -89.0f;
 	}
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
+    camera.fov -= (float)yoffset;
+    if (camera.fov < 1.0f)
 	{
-		fov = 1.0f;
+		camera.fov = 1.0f;
 	}
-    if (fov > 45.0f)
+    if (camera.fov > 45.0f)
 	{
-		fov = 45.0f;
+		camera.fov = 45.0f;
 	}
 }
