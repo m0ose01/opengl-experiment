@@ -14,7 +14,6 @@
 #include <stb_image.h>
 
 float lastX = 400, lastY = 300;
-Camera camera;
 bool firstMouse = true;
 
 int main(void)
@@ -134,7 +133,11 @@ int main(void)
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
-	initialise_camera(&camera);
+	GameState game;
+	initialise_game(&game);
+	Camera camera = game.camera;
+
+	glfwSetWindowUserPointer(window, &game);
 
 	vec3 cameraTarget;
 	glm_vec3_add(camera.position, camera.front, cameraTarget);
@@ -254,6 +257,8 @@ void processInput(GLFWwindow *window)
 
 void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 {
+	GameState *game = glfwGetWindowUserPointer(window);
+	Camera camera = game->camera;
 
 	if (firstMouse)
 	{
@@ -284,6 +289,9 @@ void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+	GameState *game = glfwGetWindowUserPointer(window);
+	Camera camera = game->camera;
+
     camera.fov -= (float)yoffset;
     if (camera.fov < 1.0f)
 	{
@@ -293,4 +301,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		camera.fov = 45.0f;
 	}
+}
+
+void initialise_game(GameState *game)
+{
+	initialise_camera(&(*game).camera);
 }
