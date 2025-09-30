@@ -6,15 +6,14 @@
 #include <shader.h>
 #include <texture.h>
 #include <camera.h>
+#include <state.h>
+#include <input.h>
 
 #include <cglm/cglm.h>
 #include <cglm/affine.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
-
-float lastX = 400, lastY = 300;
-bool firstMouse = true;
 
 int main(void)
 {
@@ -246,63 +245,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow *window)
-{
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-	}
-}
-
-void mouse_callback(GLFWwindow * window, double xpos, double ypos)
-{
-	GameState *game = glfwGetWindowUserPointer(window);
-	Camera *camera = &(game->camera);
-
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = (ypos - lastY) * -1;
-	lastX = xpos;
-	lastY = ypos;
-
-	const float sensitivity = 0.1f;
-
-	camera->yaw += xoffset * sensitivity;
-	camera->pitch += yoffset * sensitivity;
-
-	if (camera->pitch > 89.0f)
-	{
-		camera->pitch = 89.0f;
-	}
-	if (camera->pitch < -89.0f)
-	{
-		camera->pitch = -89.0f;
-	}
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	GameState *game = glfwGetWindowUserPointer(window);
-	Camera *camera = &(game->camera);
-
-	camera->fov -= (float)yoffset;
-	if (camera->fov < 1.0f)
-	{
-		camera->fov = 1.0f;
-	}
-	if (camera->fov > 45.0f)
-	{
-		camera->fov = 45.0f;
-	}
-}
-
 void initialise_game(GameState *game)
 {
 	initialise_camera(&(*game).camera);
+	initialise_input(&(*game).input_state);
 }
