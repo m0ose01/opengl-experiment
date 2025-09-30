@@ -135,17 +135,16 @@ int main(void)
 
 	GameState game;
 	initialise_game(&game);
-	Camera camera = game.camera;
 
 	glfwSetWindowUserPointer(window, &game);
 
 	vec3 cameraTarget;
-	glm_vec3_add(camera.position, camera.front, cameraTarget);
+	glm_vec3_add(game.camera.position, game.camera.front, cameraTarget);
 
 	vec3 worldUp = {0.0f, 1.0f, 0.0f};
 
 	mat4 view;
-	glm_lookat(camera.position, cameraTarget, worldUp, view);
+	glm_lookat(game.camera.position, cameraTarget, worldUp, view);
 
 	const float translationSpeed = 10.0f;
 
@@ -198,8 +197,8 @@ int main(void)
 			direction_flags = direction_flags | BACKWARDS;
 		}
 
-		rotate_camera(&camera);
-		move_camera(&camera, direction_flags, deltaTime);
+		rotate_camera(&(game.camera));
+		move_camera(&(game.camera), direction_flags, deltaTime);
 
 		glBindVertexArray(VAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -207,12 +206,12 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		glm_vec3_add(camera.position, camera.front, cameraTarget);
-		glm_lookat(camera.position, cameraTarget, worldUp, view);
+		glm_vec3_add(game.camera.position, game.camera.front, cameraTarget);
+		glm_lookat(game.camera.position, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
 		float aspectRatio = 800.0f / 600.0f;
-		glm_perspective(glm_rad(camera.fov), aspectRatio, 0.1f, 100.0f, projection);
+		glm_perspective(glm_rad(game.camera.fov), aspectRatio, 0.1f, 100.0f, projection);
 
 		for (int currentCube = 0; currentCube < 10; currentCube++)
 		{
@@ -258,7 +257,7 @@ void processInput(GLFWwindow *window)
 void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 {
 	GameState *game = glfwGetWindowUserPointer(window);
-	Camera camera = game->camera;
+	Camera *camera = &(game->camera);
 
 	if (firstMouse)
 	{
@@ -274,32 +273,32 @@ void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 
 	const float sensitivity = 0.1f;
 
-	camera.yaw += xoffset * sensitivity;
-	camera.pitch += yoffset * sensitivity;
+	camera->yaw += xoffset * sensitivity;
+	camera->pitch += yoffset * sensitivity;
 
-	if (camera.pitch > 89.0f)
+	if (camera->pitch > 89.0f)
 	{
-		camera.pitch = 89.0f;
+		camera->pitch = 89.0f;
 	}
-	if (camera.pitch < -89.0f)
+	if (camera->pitch < -89.0f)
 	{
-		camera.pitch = -89.0f;
+		camera->pitch = -89.0f;
 	}
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	GameState *game = glfwGetWindowUserPointer(window);
-	Camera camera = game->camera;
+	Camera *camera = &(game->camera);
 
-    camera.fov -= (float)yoffset;
-    if (camera.fov < 1.0f)
+	camera->fov -= (float)yoffset;
+	if (camera->fov < 1.0f)
 	{
-		camera.fov = 1.0f;
+		camera->fov = 1.0f;
 	}
-    if (camera.fov > 45.0f)
+	if (camera->fov > 45.0f)
 	{
-		camera.fov = 45.0f;
+		camera->fov = 45.0f;
 	}
 }
 
