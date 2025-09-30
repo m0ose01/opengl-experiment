@@ -8,6 +8,8 @@ void initialise_input(InputState *input_state)
 	input_state->mouse_state.last_x = 400;
 	input_state->mouse_state.last_y = 300;
 	input_state->mouse_state.first_mouse =- true;
+
+	input_state->direction = 0;
 }
 
 void processInput(GLFWwindow *window)
@@ -15,6 +17,64 @@ void processInput(GLFWwindow *window)
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	GameState *game = glfwGetWindowUserPointer(window);
+	DirectionFlags *direction_flags = &(game->input_state.direction);
+
+	// Use | to set the relevant bitfield to 1.
+	if (key ==  GLFW_KEY_LEFT && action == GLFW_PRESS)
+	{
+		*direction_flags = *direction_flags | LEFT;
+	}
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+	{
+		*direction_flags = *direction_flags | RIGHT;
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	{
+		*direction_flags = *direction_flags | UP;
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	{
+		*direction_flags = *direction_flags | DOWN;
+	}
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	{
+		*direction_flags = *direction_flags | FORWARDS;
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	{
+		*direction_flags = *direction_flags | BACKWARDS;
+	}
+
+	// On key release, zero the relevant bit using & ~ of the relevant bitflag.
+	if (key ==  GLFW_KEY_LEFT && action == GLFW_RELEASE)
+	{
+		*direction_flags = *direction_flags & ~LEFT;
+	}
+	if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+	{
+		*direction_flags = *direction_flags & ~RIGHT;
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE && !(mods & GLFW_MOD_SHIFT))
+	{
+		*direction_flags = *direction_flags & ~UP;
+	}
+	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE && (mods & GLFW_MOD_SHIFT))
+	{
+		*direction_flags = *direction_flags & ~DOWN;
+	}
+	if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+	{
+		*direction_flags = *direction_flags & ~FORWARDS;
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+	{
+		*direction_flags = *direction_flags & ~BACKWARDS;
 	}
 }
 

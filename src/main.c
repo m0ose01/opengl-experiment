@@ -46,6 +46,7 @@ int main(void)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetKeyCallback(window, key_callback);
 
 	GLuint shaderProgram = loadShader("./shaders/vertex.glsl", "./shaders/fragment.glsl");
 	if (shaderProgram == 0)
@@ -169,35 +170,8 @@ int main(void)
 
 		double time = glfwGetTime();
 
-		DirectionFlags direction_flags = 0;
-		// TODO: Figure out how to do this in a cleaner/more scaleable way
-		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		{
-			direction_flags = direction_flags | LEFT;
-		}
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		{
-			direction_flags = direction_flags | RIGHT;
-		}
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
-		{
-			direction_flags = direction_flags | UP;
-		}
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			direction_flags = direction_flags | DOWN;
-		}
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		{
-			direction_flags = direction_flags | FORWARDS;
-		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		{
-			direction_flags = direction_flags | BACKWARDS;
-		}
-
 		rotate_camera(&(game.camera));
-		move_camera(&(game.camera), direction_flags, deltaTime);
+		move_camera(&(game.camera), game.input_state.direction, deltaTime);
 
 		glBindVertexArray(VAO);
 		glActiveTexture(GL_TEXTURE0);
