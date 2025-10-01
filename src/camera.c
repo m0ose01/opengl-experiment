@@ -64,4 +64,6 @@ void move_camera(Camera *camera, DirectionFlags direction_flags, float delta_tim
 	{
 		glm_vec3_sub(camera->position, cameraUp, camera->position);
 	}
+
+	camera->position[1] = 0.0f;
 }
