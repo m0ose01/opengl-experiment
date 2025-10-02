@@ -15,6 +15,8 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
+void lookAt(vec3 position, vec3 target, vec3 up, mat4 view);
+
 int main(void)
 {
 	glfwInit();
@@ -144,7 +146,7 @@ int main(void)
 	vec3 worldUp = {0.0f, 1.0f, 0.0f};
 
 	mat4 view;
-	glm_lookat(game.camera.position, cameraTarget, worldUp, view);
+	lookAt(game.camera.position, cameraTarget, worldUp, view);
 
 	const float translationSpeed = 10.0f;
 
@@ -180,7 +182,7 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		glm_vec3_add(game.camera.position, game.camera.front, cameraTarget);
-		glm_lookat(game.camera.position, cameraTarget, worldUp, view);
+		lookAt(game.camera.position, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
 		float aspectRatio = 800.0f / 600.0f;
@@ -223,4 +225,36 @@ void initialise_game(GameState *game)
 {
 	initialise_camera(&(*game).camera);
 	initialise_input(&(*game).input_state);
+}
+
+void lookAt(vec3 position, vec3 target, vec3 up, mat4 view)
+{
+	vec3 direction;
+	glm_vec3_sub(position, target, direction);
+	glm_normalize(direction);
+
+	vec3 right;
+	glm_cross(up, direction, right);
+	glm_normalize(right);
+
+	vec3 cameraUp;
+	glm_cross(direction, right, cameraUp);
+	glm_normalize(cameraUp);
+
+	mat4 translation = GLM_MAT4_IDENTITY_INIT;
+	translation[3][0] = -position[0];
+	translation[3][1] = -position[1];
+	translation[3][2] = -position[2];
+	mat4 rotation = GLM_MAT4_IDENTITY_INIT;
+	rotation[0][0] = right[0];
+	rotation[1][0] = right[1];
+	rotation[2][0] = right[2];
+	rotation[0][1] = cameraUp[0];
+	rotation[1][1] = cameraUp[1];
+	rotation[2][1] = cameraUp[2];
+	rotation[0][2] = direction[0];
+	rotation[1][2] = direction[1];
+	rotation[2][2] = direction[2];
+
+	glm_mat4_mul(rotation, translation, view);
 }
