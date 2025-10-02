@@ -54,66 +54,52 @@ int main(void)
 		return 1;
 	}
 
-	char *texture1Path = "textures/container.jpg";
-	char *texture2Path = "textures/awesomeface.png";
-	GLuint texture1 = loadTexture(texture1Path, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
-	GLuint texture2 = loadTexture(texture2Path, GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
-
 	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
 
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		-0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
 	};
 
 	vec3 cubePositions[] = {
 		{ 0.0f,  0.0f,  0.0f},
-		{ 2.0f,  5.0f, -15.0f},
-		{-1.5f, -2.2f, -2.5f},
-		{-3.8f, -2.0f, -12.3f},
-		{ 2.4f, -0.4f, -3.5f},
-		{-1.7f,  3.0f, -7.5f},
-		{ 1.3f, -2.0f, -2.5f},
-		{ 1.5f,  2.0f, -2.5f},
-		{ 1.5f,  0.2f, -1.5f},
-		{-1.3f,  1.0f, -1.5f},
 	};
 
 	GLuint VBO, VAO;
@@ -125,9 +111,7 @@ int main(void)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	int modelLocation = glGetUniformLocation(shaderProgram, "model");
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
@@ -150,7 +134,7 @@ int main(void)
 
 	glEnable(GL_DEPTH_TEST);
 
-	/*glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);*/
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
@@ -165,8 +149,6 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-		glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-		glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
 		double time = glfwGetTime();
 
@@ -174,10 +156,6 @@ int main(void)
 		move_camera(&(game.camera), game.input_state.direction, deltaTime);
 
 		glBindVertexArray(VAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		glm_vec3_add(game.camera.position, game.camera.front, cameraTarget);
 		glm_lookat(game.camera.position, cameraTarget, worldUp, view);
@@ -186,19 +164,10 @@ int main(void)
 		float aspectRatio = 800.0f / 600.0f;
 		glm_perspective(glm_rad(game.camera.fov), aspectRatio, 0.1f, 100.0f, projection);
 
-		for (int currentCube = 0; currentCube < 10; currentCube++)
+		for (int currentCube = 0; currentCube < 1; currentCube++)
 		{
 			mat4 model = GLM_MAT4_IDENTITY_INIT;
-			vec3 modelRotationAxis = {0.5f, 1.0f, 0.0f};
 			glm_translate(model, cubePositions[currentCube]);
-			float rotationSpeed = 50.0f;
-			float rotationOffset = 20.0f;
-			float angle = glm_rad(
-				(currentCube % 3 == 0) * time * rotationSpeed
-				+ rotationOffset * currentCube
-			);
-			glm_rotate(model, angle, modelRotationAxis);
-
 			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 			glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 			glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
