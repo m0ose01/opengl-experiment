@@ -60,13 +60,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		*direction_flags = *direction_flags & ~RIGHT;
 	}
-	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE && !(mods & GLFW_MOD_SHIFT))
+	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
 	{
-		*direction_flags = *direction_flags & ~UP;
-	}
-	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE && (mods & GLFW_MOD_SHIFT))
-	{
-		*direction_flags = *direction_flags & ~DOWN;
+		*direction_flags = *direction_flags & ~(DOWN | UP);
 	}
 	if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
 	{
