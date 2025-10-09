@@ -136,7 +136,7 @@ int main(void)
 	int objectColorLocation = glGetUniformLocation(shaderProgram, "objectColour");
 	int lightColorLocation = glGetUniformLocation(shaderProgram, "lightColour");
 	int lightLocationLocation = glGetUniformLocation(shaderProgram, "lightPos");
-	printf("%i\n", lightLocationLocation);
+	int viewLocationLocation = glGetUniformLocation(shaderProgram, "viewPos");
 
 	int lightSourceColorLocation = glGetUniformLocation(shaderProgram2, "lightColour");
 
@@ -193,6 +193,7 @@ int main(void)
 		glUniform3fv(lightColorLocation, 1, lightColour);
 		glUniform3fv(objectColorLocation, 1, objectColour);
 		glUniform3fv(lightLocationLocation, 1, lightPosition);
+		glUniform3fv(viewLocationLocation, 1, game.camera.position);
 
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
