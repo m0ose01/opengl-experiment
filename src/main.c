@@ -1,4 +1,5 @@
 #include "cglm/vec3.h"
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -102,8 +103,10 @@ int main(void)
 	float cubePosition[] = {
 		0.0f, 0.0f, 0.0f,
 	};
+	double radius = 5.0;
+	double period = 10.0;
 	float lightPosition[] = {
-		1.2f, 1.0f, 2.0f
+		0.0f, radius, 0.0f
 	};
 
 	GLuint VBO, VAO;
@@ -168,12 +171,15 @@ int main(void)
 		lastFrame = currentFrame;
 		processInput(window);
 
-		glClearColor(0.2, 0.2, 0.2, 1.0);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
 
 		double time = glfwGetTime();
+		lightPosition[0] = cos(time * 2 * M_PI / period) * radius;
+		lightPosition[1] = sin(time * 2 * M_PI / period) * radius;
+		lightPosition[2] = sin(time * 2 * M_PI / period) * radius;
 
 		rotate_camera(&(game.camera));
 		move_camera(&(game.camera), game.input_state.direction, deltaTime);
