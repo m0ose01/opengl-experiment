@@ -72,6 +72,46 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		*direction_flags = *direction_flags & ~BACKWARDS;
 	}
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.ambientStrength += 0.1;
+	}
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.ambientStrength -= 0.1;
+	}
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.diffuseStrength += 0.1;
+	}
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.diffuseStrength -= 0.1;
+	}
+
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.specularStrength += 0.1;
+	}
+
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.specularStrength -= 0.1;
+	}
+
+	if (key == GLFW_KEY_4 && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.shininess += 1.0;
+	}
+
+	if (key == GLFW_KEY_4 && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	{
+		game->lighting.shininess -= 1.0;
+	}
 }
 
 void mouse_callback(GLFWwindow * window, double xpos, double ypos)

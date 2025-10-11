@@ -137,6 +137,10 @@ int main(void)
 	int lightColorLocation = glGetUniformLocation(shaderProgram, "lightColour");
 	int lightLocationLocation = glGetUniformLocation(shaderProgram, "lightPos");
 	int viewLocationLocation = glGetUniformLocation(shaderProgram, "viewPos");
+	int ambientStrengthLocation = glGetUniformLocation(shaderProgram, "ambientStrength");
+	int diffuseStrengthLocation = glGetUniformLocation(shaderProgram, "diffuseStrength");
+	int specularStrengthLocation = glGetUniformLocation(shaderProgram, "specularStrength");
+	int shininessLocation = glGetUniformLocation(shaderProgram, "shininess");
 
 	int lightSourceColorLocation = glGetUniformLocation(shaderProgram2, "lightColour");
 
@@ -195,6 +199,13 @@ int main(void)
 		glUniform3fv(lightLocationLocation, 1, lightPosition);
 		glUniform3fv(viewLocationLocation, 1, game.camera.position);
 
+		glUniform1f(ambientStrengthLocation, game.lighting.ambientStrength);
+		glUniform1f(diffuseStrengthLocation, game.lighting.diffuseStrength);
+		glUniform1f(specularStrengthLocation, game.lighting.specularStrength);
+		glUniform1f(shininessLocation, game.lighting.shininess);
+
+		printf("Ambient: %f, Diffuse: %f, Specular: %f, Shininess: %f\n", game.lighting.ambientStrength, game.lighting.diffuseStrength, game.lighting.specularStrength, game.lighting.shininess);
+
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
@@ -232,4 +243,8 @@ void initialise_game(GameState *game)
 {
 	initialise_camera(&(*game).camera);
 	initialise_input(&(*game).input_state);
+	game->lighting.ambientStrength = 0.1f;
+	game->lighting.diffuseStrength = 0.1f;
+	game->lighting.specularStrength = 0.1f;
+	game->lighting.shininess = 32;
 }
