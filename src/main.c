@@ -132,11 +132,20 @@ int main(void)
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
 	vec3 lightColour = {1.0f, 1.0f, 1.0f};
-	vec3 objectColour = {1.0f, 0.5f, 0.31f};
-	int objectColorLocation = glGetUniformLocation(shaderProgram, "objectColour");
-	int lightColorLocation = glGetUniformLocation(shaderProgram, "lightColour");
-	int lightLocationLocation = glGetUniformLocation(shaderProgram, "lightPos");
 	int viewLocationLocation = glGetUniformLocation(shaderProgram, "viewPos");
+
+	MaterialLocations materialLocations = {0};
+	LightLocations lightLocations = {0};
+
+	materialLocations.ambient = glGetUniformLocation(shaderProgram, "material.ambient");
+	materialLocations.diffuse = glGetUniformLocation(shaderProgram, "material.diffuse");
+	materialLocations.specular = glGetUniformLocation(shaderProgram, "material.specular");
+	materialLocations.shininess = glGetUniformLocation(shaderProgram, "material.shininess");
+
+	lightLocations.position = glGetUniformLocation(shaderProgram, "light.position");
+	lightLocations.ambient = glGetUniformLocation(shaderProgram, "light.ambient");
+	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
+	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
 
 	int lightSourceColorLocation = glGetUniformLocation(shaderProgram2, "lightColour");
 
@@ -190,10 +199,17 @@ int main(void)
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 		glm_translate(model, cubePosition);
 
-		glUniform3fv(lightColorLocation, 1, lightColour);
-		glUniform3fv(objectColorLocation, 1, objectColour);
-		glUniform3fv(lightLocationLocation, 1, lightPosition);
 		glUniform3fv(viewLocationLocation, 1, game.camera.position);
+
+		glUniform3fv(materialLocations.ambient, 1, (vec3){1.0f, 0.5f, 0.31f});
+		glUniform3fv(materialLocations.diffuse, 1, (vec3){1.0f, 0.5f, 0.31f});
+		glUniform3fv(materialLocations.specular, 1, (vec3){0.5f, 0.5f, 0.5f});
+		glUniform1f(materialLocations.shininess, 32.0f);
+
+		glUniform3fv(lightLocations.position, 1, lightPosition);
+		glUniform3fv(lightLocations.ambient, 1, (vec3){0.2f, 0.2f, 0.2f});
+		glUniform3fv(lightLocations.diffuse, 1, (vec3){0.5f, 0.5f, 0.5f});
+		glUniform3fv(lightLocations.specular, 1, (vec3){1.0f, 1.0f, 1.0f});
 
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
