@@ -201,6 +201,14 @@ int main(void)
 
 		double time = glfwGetTime();
 
+		lightColour[0] = sin(time * 2.0f);
+		lightColour[1] = sin(time * 0.7f);
+		lightColour[2] = sin(time * 1.3f);
+
+		glm_vec3_scale(lightColour, ambientStrength, light.ambient);
+		glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
+		// glm_vec3_scale(lightColour, specularStrength, light.specular);
+
 		rotate_camera(&(game.camera));
 		move_camera(&(game.camera), game.input_state.direction, deltaTime);
 
