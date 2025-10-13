@@ -106,6 +106,24 @@ int main(void)
 		1.2f, 1.0f, 2.0f
 	};
 
+	Light light;
+	glm_vec3_copy(lightPosition, light.position);
+
+	vec3 lightColour = {1.0f, 1.0f, 1.0f};
+	float ambientStrength = 0.2f;
+	float diffuseStrength = 0.5f;
+	float specularStrength = 1.0f;
+	glm_vec3_scale(lightColour, ambientStrength, light.ambient);
+	glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
+	glm_vec3_scale(lightColour, specularStrength, light.specular);
+
+	Material cubeMaterial =  {
+		.ambient = {1.0f, 0.5f, 0.31f},
+		.diffuse = {1.0f, 0.5f, 0.31f},
+		.specular = {0.5f, 0.5f, 0.5f},
+		.shininess = 32.0f,
+	};
+
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -131,7 +149,6 @@ int main(void)
 	int viewLocation = glGetUniformLocation(shaderProgram, "view");
 	int projectionLocation = glGetUniformLocation(shaderProgram, "projection");
 
-	vec3 lightColour = {1.0f, 1.0f, 1.0f};
 	int viewLocationLocation = glGetUniformLocation(shaderProgram, "viewPos");
 
 	MaterialLocations materialLocations = {0};
@@ -201,15 +218,15 @@ int main(void)
 
 		glUniform3fv(viewLocationLocation, 1, game.camera.position);
 
-		glUniform3fv(materialLocations.ambient, 1, (vec3){1.0f, 0.5f, 0.31f});
-		glUniform3fv(materialLocations.diffuse, 1, (vec3){1.0f, 0.5f, 0.31f});
-		glUniform3fv(materialLocations.specular, 1, (vec3){0.5f, 0.5f, 0.5f});
-		glUniform1f(materialLocations.shininess, 32.0f);
+		glUniform3fv(materialLocations.ambient, 1, cubeMaterial.ambient);
+		glUniform3fv(materialLocations.diffuse, 1, cubeMaterial.diffuse);
+		glUniform3fv(materialLocations.specular, 1, cubeMaterial.specular);
+		glUniform1f(materialLocations.shininess, cubeMaterial.shininess);
 
-		glUniform3fv(lightLocations.position, 1, lightPosition);
-		glUniform3fv(lightLocations.ambient, 1, (vec3){0.2f, 0.2f, 0.2f});
-		glUniform3fv(lightLocations.diffuse, 1, (vec3){0.5f, 0.5f, 0.5f});
-		glUniform3fv(lightLocations.specular, 1, (vec3){1.0f, 1.0f, 1.0f});
+		glUniform3fv(lightLocations.position, 1, light.position);
+		glUniform3fv(lightLocations.ambient, 1, light.ambient);
+		glUniform3fv(lightLocations.diffuse, 1, light.diffuse);
+		glUniform3fv(lightLocations.specular, 1, light.specular);
 
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
@@ -221,7 +238,7 @@ int main(void)
 
 		glBindVertexArray(lightVAO);
 		mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
-		glm_translate(lightModel, lightPosition);
+		glm_translate(lightModel, light.position);
 		glm_scale_uni(lightModel, 0.2f);
 
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)lightModel);
