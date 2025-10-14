@@ -3,6 +3,13 @@
 #include <input.h>
 #include <state.h>
 
+#define LEFT_KEY GLFW_KEY_A
+#define RIGHT_KEY GLFW_KEY_D
+#define FORWARD_KEY GLFW_KEY_W
+#define BACK_KEY GLFW_KEY_S
+#define VERTICAL_KEY GLFW_KEY_SPACE
+#define DOWN_MOD GLFW_MOD_SHIFT
+
 void initialise_input(InputState *input_state)
 {
 	input_state->mouse_state.last_x = 400;
@@ -26,37 +33,37 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	DirectionFlags *direction_flags = &(game->input_state.direction);
 
 	// Use | to set the relevant bitfield to 1.
-	if (key ==  GLFW_KEY_LEFT && action == GLFW_PRESS)
+	if (key == LEFT_KEY && action == GLFW_PRESS)
 	{
 		*direction_flags = *direction_flags | LEFT;
 	}
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+	if (key == RIGHT_KEY && action == GLFW_PRESS)
 	{
 		*direction_flags = *direction_flags | RIGHT;
 	}
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !(mods & GLFW_MOD_SHIFT))
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && !(mods & DOWN_MOD))
 	{
 		*direction_flags = *direction_flags | UP;
 	}
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && (mods & GLFW_MOD_SHIFT))
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS && (mods & DOWN_MOD))
 	{
 		*direction_flags = *direction_flags | DOWN;
 	}
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+	if (key == FORWARD_KEY && action == GLFW_PRESS)
 	{
 		*direction_flags = *direction_flags | FORWARDS;
 	}
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+	if (key == BACK_KEY && action == GLFW_PRESS)
 	{
 		*direction_flags = *direction_flags | BACKWARDS;
 	}
 
 	// On key release, zero the relevant bit using & ~ of the relevant bitflag.
-	if (key ==  GLFW_KEY_LEFT && action == GLFW_RELEASE)
+	if (key ==  LEFT_KEY && action == GLFW_RELEASE)
 	{
 		*direction_flags = *direction_flags & ~LEFT;
 	}
-	if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+	if (key == RIGHT_KEY && action == GLFW_RELEASE)
 	{
 		*direction_flags = *direction_flags & ~RIGHT;
 	}
@@ -64,11 +71,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 	{
 		*direction_flags = *direction_flags & ~(DOWN | UP);
 	}
-	if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+	if (key == FORWARD_KEY && action == GLFW_RELEASE)
 	{
 		*direction_flags = *direction_flags & ~FORWARDS;
 	}
-	if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+	if (key == BACK_KEY && action == GLFW_RELEASE)
 	{
 		*direction_flags = *direction_flags & ~BACKWARDS;
 	}
