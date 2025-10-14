@@ -15,6 +15,9 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
+#define WINDOW_HEIGHT 600.0f
+#define WINDOW_WIDTH 800.0f
+
 int main(void)
 {
 	glfwInit();
@@ -25,7 +28,7 @@ int main(void)
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	#endif
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "LearnOpenGL", NULL, NULL);
 	if (window == NULL)
 	{
 		printf("Failed to create GLFW window.\n");
@@ -40,7 +43,7 @@ int main(void)
 		return -1;
 	}
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -218,7 +221,7 @@ int main(void)
 		glm_lookat(game.camera.position, cameraTarget, worldUp, view);
 
 		mat4 projection = GLM_MAT4_IDENTITY_INIT;
-		float aspectRatio = 800.0f / 600.0f;
+		float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
 		glm_perspective(glm_rad(game.camera.fov), aspectRatio, 0.1f, 100.0f, projection);
 
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
