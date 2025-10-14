@@ -110,18 +110,18 @@ int main(void)
 	glm_vec3_copy(lightPosition, light.position);
 
 	vec3 lightColour = {1.0f, 1.0f, 1.0f};
-	float ambientStrength = 0.2f;
-	float diffuseStrength = 0.5f;
+	float ambientStrength = 1.0f;
+	float diffuseStrength = 1.0f;
 	float specularStrength = 1.0f;
 	glm_vec3_scale(lightColour, ambientStrength, light.ambient);
 	glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
 	glm_vec3_scale(lightColour, specularStrength, light.specular);
 
 	Material cubeMaterial =  {
-		.ambient = {1.0f, 0.5f, 0.31f},
-		.diffuse = {1.0f, 0.5f, 0.31f},
-		.specular = {0.5f, 0.5f, 0.5f},
-		.shininess = 32.0f,
+		.ambient = {0.0215f, 0.1745f, 0.0215f},
+		.diffuse = {0.07568f, 0.61424f, 0.07568f},
+		.specular = {0.633f, 0.727811f, 0.633f},
+		.shininess = 0.6f,
 	};
 
 	GLuint VBO, VAO;
@@ -201,9 +201,9 @@ int main(void)
 
 		double time = glfwGetTime();
 
-		lightColour[0] = sin(time * 2.0f);
-		lightColour[1] = sin(time * 0.7f);
-		lightColour[2] = sin(time * 1.3f);
+		// lightColour[0] = sin(time * 2.0f);
+		// lightColour[1] = sin(time * 0.7f);
+		// lightColour[2] = sin(time * 1.3f);
 
 		glm_vec3_scale(lightColour, ambientStrength, light.ambient);
 		glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
