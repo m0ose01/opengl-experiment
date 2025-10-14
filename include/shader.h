@@ -12,9 +12,8 @@ typedef struct MaterialLocations {
 } MaterialLocations;
 
 typedef struct Material {
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
+	GLuint diffuseMap;
+	GLuint specularMap;
 	float shininess;
 } Material;
 

@@ -25,7 +25,7 @@ GLuint loadTexture(char *texturePath, int wrapS, int wrapT)
 	if (data == NULL)
 	{
 		fprintf(stderr, "Error loading image. %s\n", texturePath);
-		return 0;
+		return -1;
 	}
 
 	int internalFormat = nrChannels > 3 ? GL_RGBA : GL_RGB;
