@@ -18,14 +18,14 @@ typedef struct Material {
 } Material;
 
 typedef struct LightLocations {
-	GLuint position;
+	GLuint direction;
 	GLuint ambient;
 	GLuint diffuse;
 	GLuint specular;
 } LightLocations;
 
 typedef struct Light {
-	vec3 position;
+	vec3 direction;
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
