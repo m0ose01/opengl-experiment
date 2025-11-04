@@ -175,6 +175,9 @@ int main(void)
 	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
 
+	int lightModelLocation = glGetUniformLocation(shaderProgram2, "model");
+	int lightViewLocation = glGetUniformLocation(shaderProgram2, "view");
+	int lightProjectionLocation = glGetUniformLocation(shaderProgram2, "projection");
 	int lightSourceColorLocation = glGetUniformLocation(shaderProgram2, "lightColour");
 
 	GameState game;
@@ -261,9 +264,9 @@ int main(void)
 		glm_translate(lightModel, light.position);
 		glm_scale_uni(lightModel, 0.2f);
 
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)lightModel);
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
+		glUniformMatrix4fv(lightModelLocation, 1, GL_FALSE, (float *)lightModel);
+		glUniformMatrix4fv(lightViewLocation, 1, GL_FALSE, (float *)view);
+		glUniformMatrix4fv(lightProjectionLocation, 1, GL_FALSE, (float *)projection);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
