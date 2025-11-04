@@ -60,6 +60,10 @@ int main(void)
 		return 1;
 	}
 	GLuint shaderProgram2 = loadShader("./shaders/vertex.glsl", "./shaders/fragment2.glsl");
+	if (shaderProgram2 == 0)
+	{
+		return 1;
+	}
 
 	float vertices[] = {
 		// positions          // normals           // texture coords
