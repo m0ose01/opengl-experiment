@@ -219,7 +219,7 @@ int main(void)
 		glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
 		// glm_vec3_scale(lightColour, specularStrength, light.specular);
 
-		move_camera(&(game.camera), game.input_state.direction, deltaTime);
+		translate_camera(&(game.camera), game.input_state.direction, translationSpeed * deltaTime);
 
 		glBindVertexArray(VAO);
 

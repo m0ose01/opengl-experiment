@@ -41,44 +41,45 @@ void rotate_camera(Camera *camera, float delta_yaw, float delta_pitch)
 	_update_camera_rotation(camera);
 }
 
-void move_camera(Camera *camera, DirectionFlags direction_flags, float delta_time)
+void translate_camera(Camera *camera, DirectionFlags direction_flags, float translation_distance)
 {
-	const float translation_speed = 10.0f;
+	// always the same as camera's up vector, and already normalised
 	vec3 worldUp = {0.0f, 1.0f, 0.0f};
 
 	vec3 cameraForward = {0, 0, 0};
-	glm_vec3_scale(camera->front, translation_speed * delta_time, cameraForward);
-
-	vec3 cameraUp = {0, 0, 0};
-	glm_vec3_scale(worldUp, translation_speed * delta_time, cameraUp);
+	glm_vec3_normalize_to(camera->front, cameraForward);
 
 	vec3 cameraRight = {0, 0, 0};
 	glm_vec3_cross(cameraForward, worldUp, cameraRight);
 	glm_vec3_normalize(cameraRight);
-	glm_vec3_scale(cameraRight, translation_speed * delta_time, cameraRight);
+
+	vec3 movement_vector = { 0.0f, 0.0f, 0.0f };
 
 	if (direction_flags & FORWARDS)
 	{
-		glm_vec3_add(camera->position, cameraForward, camera->position);
+		glm_vec3_add(movement_vector, cameraForward, movement_vector);
 	}
 	if (direction_flags & BACKWARDS)
 	{
-		glm_vec3_sub(camera->position, cameraForward, camera->position);
+		glm_vec3_sub(movement_vector, cameraForward, movement_vector);
 	}
 	if (direction_flags & RIGHT)
 	{
-		glm_vec3_add(camera->position, cameraRight, camera->position);
+		glm_vec3_add(movement_vector, cameraRight, movement_vector);
 	}
 	if (direction_flags & LEFT)
 	{
-		glm_vec3_sub(camera->position, cameraRight, camera->position);
+		glm_vec3_sub(movement_vector, cameraRight, movement_vector);
 	}
 	if (direction_flags & UP)
 	{
-		glm_vec3_add(camera->position, cameraUp, camera->position);
+		glm_vec3_add(movement_vector, worldUp, movement_vector);
 	}
 	if (direction_flags & DOWN)
 	{
-		glm_vec3_sub(camera->position, cameraUp, camera->position);
+		glm_vec3_sub(movement_vector, worldUp, movement_vector);
 	}
+
+	glm_vec3_scale(movement_vector, translation_distance, movement_vector);
+	glm_vec3_add(camera->position, movement_vector, camera->position);
 }
