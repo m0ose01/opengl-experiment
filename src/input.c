@@ -101,17 +101,10 @@ void mouse_callback(GLFWwindow * window, double xpos, double ypos)
 
 	const float sensitivity = 0.1f;
 
-	camera->yaw += xoffset * sensitivity;
-	camera->pitch += yoffset * sensitivity;
+	const float delta_yaw = xoffset * sensitivity;
+	const float delta_pitch = yoffset * sensitivity;
+	rotate_camera(camera, delta_yaw, delta_pitch);
 
-	if (camera->pitch > 89.0f)
-	{
-		camera->pitch = 89.0f;
-	}
-	if (camera->pitch < -89.0f)
-	{
-		camera->pitch = -89.0f;
-	}
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

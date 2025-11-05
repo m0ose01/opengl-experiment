@@ -1,27 +1,44 @@
 #include <camera.h>
 
+static void _update_camera_rotation(Camera *camera);
+
 void initialise_camera(Camera *camera)
 {
-	camera->pitch = 0.0f;
-	camera->yaw = -90.0f;
+	camera->_pitch = 0.0f;
+	camera->_yaw = -90.0f;
 
 	camera->position[0] = 0.0f;
 	camera->position[1] = 0.0f;
 	camera->position[2] = 3.0f;
 
-	camera->front[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-	camera->front[1] = sin(glm_rad(camera->pitch));
-	camera->front[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	camera->front[0] = cos(glm_rad(camera->_yaw)) * cos(glm_rad(camera->_pitch));
+	camera->front[1] = sin(glm_rad(camera->_pitch));
+	camera->front[2] = sin(glm_rad(camera->_yaw)) * cos(glm_rad(camera->_pitch));
 
 	camera->fov = 45.0f;
 }
 
-void rotate_camera(Camera *camera)
+static void _update_camera_rotation(Camera *camera)
 {
-	camera->front[0] = cos(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
-	camera->front[1] = sin(glm_rad(camera->pitch));
-	camera->front[2] = sin(glm_rad(camera->yaw)) * cos(glm_rad(camera->pitch));
+	camera->front[0] = cos(glm_rad(camera->_yaw)) * cos(glm_rad(camera->_pitch));
+	camera->front[1] = sin(glm_rad(camera->_pitch));
+	camera->front[2] = sin(glm_rad(camera->_yaw)) * cos(glm_rad(camera->_pitch));
 	glm_normalize(camera->front);
+}
+
+void rotate_camera(Camera *camera, float delta_yaw, float delta_pitch)
+{
+	camera->_yaw += delta_yaw;
+	camera->_pitch += delta_pitch;
+	if (camera->_pitch > 89.0f)
+	{
+		camera->_pitch = 89.0f;
+	}
+	if (camera->_pitch < -89.0f)
+	{
+		camera->_pitch = -89.0f;
+	}
+	_update_camera_rotation(camera);
 }
 
 void move_camera(Camera *camera, DirectionFlags direction_flags, float delta_time)
