@@ -32,6 +32,7 @@ GLuint loadTexture(char *texturePath, int wrapS, int wrapT)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, internalFormat, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
 	return texture;
 }
 
