@@ -123,24 +123,21 @@ int main(void)
 		-1.3f,  1.0f, -1.5f
 	};
 
-	float lightPosition[] = {
-		0.2f, 1.0f, 0.3f
-	};
+	Light pointLight;
+	{
+		vec3 lightPosition = { 0.2f, 1.0f, 0.3f };
+		vec3 lightColour = { 1.0f, 1.0f, 1.0f };
 
-	Light light;
-	glm_vec3_copy(lightPosition, light.position);
+		float ambientStrength = 0.2f;
+		float diffuseStrength = 0.5f;
+		float specularStrength = 1.0f;
 
-	vec3 lightColour = {1.0f, 1.0f, 1.0f};
-	float ambientStrength = 0.2f;
-	float diffuseStrength = 0.5f;
-	float specularStrength = 1.0f;
-	glm_vec3_scale(lightColour, ambientStrength, light.ambient);
-	glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
-	glm_vec3_scale(lightColour, specularStrength, light.specular);
+		float lightConstant = 1.0f;
+		float lightLinear = 0.09f;
+		float lightQuadratic = 0.032f;
 
-	light.constant = 1.0f;
-	light.linear = 0.09f;
-	light.quadratic = 0.032f;
+		initPointLight(&pointLight, lightPosition, lightColour, ambientStrength, diffuseStrength, specularStrength, lightConstant, lightLinear, lightQuadratic);
+	}
 
 	Material cubeMaterial =  {
 		.diffuseMap = loadTexture("./textures/container2.png", GL_REPEAT, GL_REPEAT),
@@ -232,10 +229,6 @@ int main(void)
 
 		double time = glfwGetTime();
 
-		glm_vec3_scale(lightColour, ambientStrength, light.ambient);
-		glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
-		// glm_vec3_scale(lightColour, specularStrength, light.specular);
-
 		translate_camera(&(game.camera), game.input_state.direction, translationSpeed * deltaTime);
 
 		glBindVertexArray(VAO);
@@ -269,24 +262,24 @@ int main(void)
 		glUniform1i(materialLocations.specular, 1);
 		glUniform1f(materialLocations.shininess, cubeMaterial.shininess);
 
-		glUniform3fv(lightLocations.position, 1, light.position);
-		glUniform3fv(lightLocations.ambient, 1, light.ambient);
-		glUniform3fv(lightLocations.diffuse, 1, light.diffuse);
-		glUniform3fv(lightLocations.specular, 1, light.specular);
+		glUniform3fv(lightLocations.position, 1, pointLight.position);
+		glUniform3fv(lightLocations.ambient, 1, pointLight.ambient);
+		glUniform3fv(lightLocations.diffuse, 1, pointLight.diffuse);
+		glUniform3fv(lightLocations.specular, 1, pointLight.specular);
 
-		glUniform1f(lightLocations.constant, light.constant);
-		glUniform1f(lightLocations.linear, light.linear);
-		glUniform1f(lightLocations.quadratic, light.quadratic);
+		glUniform1f(lightLocations.constant, pointLight.constant);
+		glUniform1f(lightLocations.linear, pointLight.linear);
+		glUniform1f(lightLocations.quadratic, pointLight.quadratic);
 
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
 
 		glUseProgram(shaderProgram2);
-		glUniform3fv(lightSourceColorLocation, 1, lightColour);
+		glUniform3fv(lightSourceColorLocation, 1, pointLight.colour);
 
 		glBindVertexArray(lightVAO);
 		mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
-		glm_translate(lightModel, light.position);
+		glm_translate(lightModel, pointLight.position);
 		glm_scale_uni(lightModel, 0.2f);
 
 		glUniformMatrix4fv(lightModelLocation, 1, GL_FALSE, (float *)lightModel);

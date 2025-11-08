@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <shader.h>
+#include <cglm/cglm.h>
+
 GLuint loadShader(const char *vertex_path, const char *fragment_path)
 {
 	const char *shader_paths[] = {vertex_path, fragment_path};
@@ -64,5 +67,19 @@ GLuint loadShader(const char *vertex_path, const char *fragment_path)
 	}
 
 	return shader_program;
+}
+
+void initPointLight(Light *light, vec3 position, vec3 colour, float ambient, float diffuse, float specular, float constant, float linear, float quadratic)
+{
+	glm_vec3_copy(position, light->position);
+	glm_vec3_copy(colour, light->colour);
+
+	glm_vec3_scale(colour, ambient, light->ambient);
+	glm_vec3_scale(colour, diffuse, light->diffuse);
+	glm_vec3_scale(colour, specular, light->specular);
+
+	light->constant = constant;
+	light->linear = linear;
+	light->quadratic = quadratic;
 }
 

@@ -24,5 +24,5 @@ target_include_directories(input PRIVATE include cglm/include) # don't need to l
 target_link_libraries(game glfw glad stb_image cglm texture shader camera input)
 target_link_libraries(camera glfw cglm)
 target_link_libraries(input glfw)
-target_link_libraries(shader glad stb_image)
+target_link_libraries(shader cglm glad stb_image)
 target_link_libraries(texture glad stb_image)
