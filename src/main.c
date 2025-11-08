@@ -128,7 +128,7 @@ int main(void)
 	};
 
 	Light light;
-	glm_vec3_scale(lightPosition, -1, light.direction);
+	glm_vec3_copy(lightPosition, light.position);
 
 	vec3 lightColour = {1.0f, 1.0f, 1.0f};
 	float ambientStrength = 0.2f;
@@ -180,7 +180,7 @@ int main(void)
 	materialLocations.specular = glGetUniformLocation(shaderProgram, "material.specular");
 	materialLocations.shininess = glGetUniformLocation(shaderProgram, "material.shininess");
 
-	lightLocations.direction = glGetUniformLocation(shaderProgram, "light.direction");
+	lightLocations.position = glGetUniformLocation(shaderProgram, "light.position");
 	lightLocations.ambient = glGetUniformLocation(shaderProgram, "light.ambient");
 	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
@@ -262,7 +262,7 @@ int main(void)
 		glUniform1i(materialLocations.specular, 1);
 		glUniform1f(materialLocations.shininess, cubeMaterial.shininess);
 
-		glUniform3fv(lightLocations.direction, 1, light.direction);
+		glUniform3fv(lightLocations.position, 1, light.position);
 		glUniform3fv(lightLocations.ambient, 1, light.ambient);
 		glUniform3fv(lightLocations.diffuse, 1, light.diffuse);
 		glUniform3fv(lightLocations.specular, 1, light.specular);
@@ -274,7 +274,7 @@ int main(void)
 
 		glBindVertexArray(lightVAO);
 		mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
-		// glm_translate(lightModel, light.direction);
+		glm_translate(lightModel, light.position);
 		glm_scale_uni(lightModel, 0.2f);
 
 		glUniformMatrix4fv(lightModelLocation, 1, GL_FALSE, (float *)lightModel);
