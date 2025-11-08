@@ -110,11 +110,21 @@ int main(void)
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 	};
 
-	float cubePosition[] = {
-		0.0f, 0.0f, 0.0f,
+	float cubePositions[] = {
+		0.0f,  0.0f,  0.0f,
+		2.0f,  5.0f, -15.0f,
+		-1.5f, -2.2f, -2.5f,
+		-3.8f, -2.0f, -12.3f,
+		2.4f, -0.4f, -3.5f,
+		-1.7f,  3.0f, -7.5f,
+		1.3f, -2.0f, -2.5f,
+		1.5f,  2.0f, -2.5f,
+		1.5f,  0.2f, -1.5f,
+		-1.3f,  1.0f, -1.5f
 	};
+
 	float lightPosition[] = {
-		1.2f, 1.0f, 2.0f
+		0.2f, 1.0f, 0.3f
 	};
 
 	Light light;
@@ -230,9 +240,16 @@ int main(void)
 		float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
 		glm_perspective(glm_rad(game.camera.fov), aspectRatio, 0.1f, 100.0f, projection);
 
-		mat4 model = GLM_MAT4_IDENTITY_INIT;
-		glm_translate(model, cubePosition);
+		for (int i = 0; i < 10 * 3; i+= 3)
+		{
+			mat4 model = GLM_MAT4_IDENTITY_INIT;
+			glm_translate(model, (vec3){ cubePositions[i], cubePositions[i + 1], cubePositions[i + 2] });
+			float angle = 20.0f * i;
+			glm_rotate(model, angle, (vec3){1.0f, 0.3f, 0.5f});
+			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 		glUniform3fv(viewLocationLocation, 1, game.camera.position);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -249,11 +266,8 @@ int main(void)
 		glUniform3fv(lightLocations.ambient, 1, light.ambient);
 		glUniform3fv(lightLocations.diffuse, 1, light.diffuse);
 		glUniform3fv(lightLocations.specular, 1, light.specular);
-
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, (float *)model);
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glUseProgram(shaderProgram2);
 		glUniform3fv(lightSourceColorLocation, 1, lightColour);
