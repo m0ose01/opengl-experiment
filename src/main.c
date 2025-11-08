@@ -138,6 +138,10 @@ int main(void)
 	glm_vec3_scale(lightColour, diffuseStrength, light.diffuse);
 	glm_vec3_scale(lightColour, specularStrength, light.specular);
 
+	light.constant = 1.0f;
+	light.linear = 0.09f;
+	light.quadratic = 0.032f;
+
 	Material cubeMaterial =  {
 		.diffuseMap = loadTexture("./textures/container2.png", GL_REPEAT, GL_REPEAT),
 		.specularMap = loadTexture("./textures/container2_specular.png", GL_REPEAT, GL_REPEAT),
@@ -184,6 +188,9 @@ int main(void)
 	lightLocations.ambient = glGetUniformLocation(shaderProgram, "light.ambient");
 	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
+	lightLocations.constant = glGetUniformLocation(shaderProgram, "light.constant");
+	lightLocations.linear = glGetUniformLocation(shaderProgram, "light.linear");
+	lightLocations.quadratic = glGetUniformLocation(shaderProgram, "light.quadratic");
 
 	int lightModelLocation = glGetUniformLocation(shaderProgram2, "model");
 	int lightViewLocation = glGetUniformLocation(shaderProgram2, "view");
@@ -266,6 +273,11 @@ int main(void)
 		glUniform3fv(lightLocations.ambient, 1, light.ambient);
 		glUniform3fv(lightLocations.diffuse, 1, light.diffuse);
 		glUniform3fv(lightLocations.specular, 1, light.specular);
+
+		glUniform1f(lightLocations.constant, light.constant);
+		glUniform1f(lightLocations.linear, light.linear);
+		glUniform1f(lightLocations.quadratic, light.quadratic);
+
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
 

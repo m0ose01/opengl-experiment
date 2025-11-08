@@ -22,6 +22,10 @@ typedef struct LightLocations {
 	GLuint ambient;
 	GLuint diffuse;
 	GLuint specular;
+
+	GLuint constant;
+	GLuint linear;
+	GLuint quadratic;
 } LightLocations;
 
 typedef struct Light {
@@ -29,6 +33,10 @@ typedef struct Light {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float constant;
+	float linear;
+	float quadratic;
 } Light;
 
 GLuint loadShader(const char *vertexPath, const char *fragmentPath);
