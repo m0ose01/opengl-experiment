@@ -19,6 +19,8 @@ typedef struct Material {
 
 typedef struct LightLocations {
 	GLuint position;
+	GLuint direction;
+
 	GLuint ambient;
 	GLuint diffuse;
 	GLuint specular;
@@ -26,6 +28,7 @@ typedef struct LightLocations {
 	GLuint constant;
 	GLuint linear;
 	GLuint quadratic;
+	GLuint cutoff_costheta;
 } LightLocations;
 
 typedef struct Light {

@@ -54,6 +54,11 @@ int main(void)
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetKeyCallback(window, key_callback);
 
+	GameState game;
+	initialise_game(&game);
+
+	glfwSetWindowUserPointer(window, &game);
+
 	GLuint shaderProgram = loadShader("./shaders/vertex.glsl", "./shaders/fragment.glsl");
 	if (shaderProgram == 0)
 	{
@@ -123,21 +128,39 @@ int main(void)
 		-1.3f,  1.0f, -1.5f
 	};
 
-	Light pointLight;
+	Light spotlight;
 	{
-		vec3 lightPosition = { 0.2f, 1.0f, 0.3f };
 		vec3 lightColour = { 1.0f, 1.0f, 1.0f };
+		glm_vec3_copy(game.camera.position, spotlight.position);
+		glm_vec3_copy(game.camera.front, spotlight.direction);
+		glm_vec3_copy(lightColour, spotlight.colour);
+		spotlight.cutoff_costheta = cos(glm_rad(12.5f));
 
 		float ambientStrength = 0.2f;
 		float diffuseStrength = 0.5f;
 		float specularStrength = 1.0f;
 
-		float lightConstant = 1.0f;
-		float lightLinear = 0.09f;
-		float lightQuadratic = 0.032f;
+		glm_vec3_scale(lightColour, ambientStrength, spotlight.ambient);
+		glm_vec3_scale(lightColour, diffuseStrength, spotlight.diffuse);
+		glm_vec3_scale(lightColour, specularStrength, spotlight.specular);
 
-		initPointLight(&pointLight, lightPosition, lightColour, ambientStrength, diffuseStrength, specularStrength, lightConstant, lightLinear, lightQuadratic);
 	}
+
+	// Light pointLight;
+	// {
+	// 	vec3 lightPosition = { 0.2f, 1.0f, 0.3f };
+	// 	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
+	//
+	// 	float ambientStrength = 0.2f;
+	// 	float diffuseStrength = 0.5f;
+	// 	float specularStrength = 1.0f;
+	//
+	// 	float lightConstant = 1.0f;
+	// 	float lightLinear = 0.09f;
+	// 	float lightQuadratic = 0.032f;
+	//
+	// 	initPointLight(&pointLight, lightPosition, lightColour, ambientStrength, diffuseStrength, specularStrength, lightConstant, lightLinear, lightQuadratic);
+	// }
 
 	Material cubeMaterial =  {
 		.diffuseMap = loadTexture("./textures/container2.png", GL_REPEAT, GL_REPEAT),
@@ -182,22 +205,16 @@ int main(void)
 	materialLocations.shininess = glGetUniformLocation(shaderProgram, "material.shininess");
 
 	lightLocations.position = glGetUniformLocation(shaderProgram, "light.position");
+	lightLocations.direction = glGetUniformLocation(shaderProgram, "light.direction");
 	lightLocations.ambient = glGetUniformLocation(shaderProgram, "light.ambient");
 	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
-	lightLocations.constant = glGetUniformLocation(shaderProgram, "light.constant");
-	lightLocations.linear = glGetUniformLocation(shaderProgram, "light.linear");
-	lightLocations.quadratic = glGetUniformLocation(shaderProgram, "light.quadratic");
+	lightLocations.cutoff_costheta = glGetUniformLocation(shaderProgram, "light.cutoff_costheta");
 
 	int lightModelLocation = glGetUniformLocation(shaderProgram2, "model");
 	int lightViewLocation = glGetUniformLocation(shaderProgram2, "view");
 	int lightProjectionLocation = glGetUniformLocation(shaderProgram2, "projection");
 	int lightSourceColorLocation = glGetUniformLocation(shaderProgram2, "lightColour");
-
-	GameState game;
-	initialise_game(&game);
-
-	glfwSetWindowUserPointer(window, &game);
 
 	vec3 cameraTarget;
 	glm_vec3_add(game.camera.position, game.camera.front, cameraTarget);
@@ -258,35 +275,37 @@ int main(void)
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, cubeMaterial.specularMap);
 
+		glm_vec3_copy(game.camera.position, spotlight.position);
+		glm_vec3_copy(game.camera.front, spotlight.direction);
+
 		glUniform1i(materialLocations.diffuse, 0);
 		glUniform1i(materialLocations.specular, 1);
 		glUniform1f(materialLocations.shininess, cubeMaterial.shininess);
 
-		glUniform3fv(lightLocations.position, 1, pointLight.position);
-		glUniform3fv(lightLocations.ambient, 1, pointLight.ambient);
-		glUniform3fv(lightLocations.diffuse, 1, pointLight.diffuse);
-		glUniform3fv(lightLocations.specular, 1, pointLight.specular);
+		glUniform3fv(lightLocations.position, 1, spotlight.position);
+		glUniform3fv(lightLocations.direction, 1, spotlight.direction);
+		glUniform3fv(lightLocations.ambient, 1, spotlight.ambient);
+		glUniform3fv(lightLocations.diffuse, 1, spotlight.diffuse);
+		glUniform3fv(lightLocations.specular, 1, spotlight.specular);
 
-		glUniform1f(lightLocations.constant, pointLight.constant);
-		glUniform1f(lightLocations.linear, pointLight.linear);
-		glUniform1f(lightLocations.quadratic, pointLight.quadratic);
+		glUniform1f(lightLocations.cutoff_costheta, spotlight.cutoff_costheta);
 
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);
 
-		glUseProgram(shaderProgram2);
-		glUniform3fv(lightSourceColorLocation, 1, pointLight.colour);
-
-		glBindVertexArray(lightVAO);
-		mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
-		glm_translate(lightModel, pointLight.position);
-		glm_scale_uni(lightModel, 0.2f);
-
-		glUniformMatrix4fv(lightModelLocation, 1, GL_FALSE, (float *)lightModel);
-		glUniformMatrix4fv(lightViewLocation, 1, GL_FALSE, (float *)view);
-		glUniformMatrix4fv(lightProjectionLocation, 1, GL_FALSE, (float *)projection);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		// glUseProgram(shaderProgram2);
+		// glUniform3fv(lightSourceColorLocation, 1, spotlight.colour);
+		//
+		// glBindVertexArray(lightVAO);
+		// mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
+		// glm_translate(lightModel, spotlight.position);
+		// glm_scale_uni(lightModel, 0.2f);
+		//
+		// glUniformMatrix4fv(lightModelLocation, 1, GL_FALSE, (float *)lightModel);
+		// glUniformMatrix4fv(lightViewLocation, 1, GL_FALSE, (float *)view);
+		// glUniformMatrix4fv(lightProjectionLocation, 1, GL_FALSE, (float *)projection);
+		//
+		// glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
