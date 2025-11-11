@@ -135,6 +135,7 @@ int main(void)
 		glm_vec3_copy(game.camera.front, spotlight.direction);
 		glm_vec3_copy(lightColour, spotlight.colour);
 		spotlight.cutoff_costheta = cos(glm_rad(12.5f));
+		spotlight.outercutoff_costheta = cos(glm_rad(17.5f));
 
 		float ambientStrength = 0.2f;
 		float diffuseStrength = 0.5f;
@@ -210,6 +211,7 @@ int main(void)
 	lightLocations.diffuse = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightLocations.specular = glGetUniformLocation(shaderProgram, "light.specular");
 	lightLocations.cutoff_costheta = glGetUniformLocation(shaderProgram, "light.cutoff_costheta");
+	lightLocations.outercutoff_costheta = glGetUniformLocation(shaderProgram, "light.outercutoff_costheta");
 
 	int lightModelLocation = glGetUniformLocation(shaderProgram2, "model");
 	int lightViewLocation = glGetUniformLocation(shaderProgram2, "view");
@@ -289,6 +291,7 @@ int main(void)
 		glUniform3fv(lightLocations.specular, 1, spotlight.specular);
 
 		glUniform1f(lightLocations.cutoff_costheta, spotlight.cutoff_costheta);
+		glUniform1f(lightLocations.outercutoff_costheta, spotlight.outercutoff_costheta);
 
 		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, (float *)view);
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, (float *)projection);

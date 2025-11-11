@@ -29,6 +29,7 @@ typedef struct LightLocations {
 	GLuint linear;
 	GLuint quadratic;
 	GLuint cutoff_costheta;
+	GLuint outercutoff_costheta;
 } LightLocations;
 
 typedef struct Light {
@@ -44,6 +45,7 @@ typedef struct Light {
 	float linear;
 	float quadratic;
 	float cutoff_costheta;
+	float outercutoff_costheta;
 } Light;
 
 GLuint loadShader(const char *vertexPath, const char *fragmentPath);
