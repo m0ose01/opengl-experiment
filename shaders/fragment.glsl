@@ -52,10 +52,6 @@ void main()
 
 	// ambient
 	vec3 ambient = intensity * light.ambient * vec3(texture(material.diffuse, TexCoords));
-	// if (costheta > light.cutoff_costheta && length(light.direction) > 0)
-	// {
-	// float light_distance = length(light_vector);
-	// float attenuation = 1.0 / (light.constant + light.linear * light_distance + light.quadratic * pow(light_distance, 2));
 
 	// needed for diffuse/specular lighting
 	vec3 norm = normalize(Normal);
@@ -71,11 +67,6 @@ void main()
 	vec3 specular = intensity * spec * light.specular * vec3(texture(material.specular, TexCoords));
 
 	result = ambient + diffuse + specular;
-	// }
-	// else
-	// {
-	result = ambient;
-	// }
 
 	FragColor = vec4(result, 1.0);
 }
